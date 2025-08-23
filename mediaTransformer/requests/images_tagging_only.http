@@ -1,0 +1,87 @@
+### Cat
+POST http://localhost:8003/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "skip_upload":true,
+    "bucket_name":"public",
+    "object_name":"test/text.webp",
+    "upload_mime_type":"image/webp",
+    "describe":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.webp"
+Content-Type: image/webp
+
+< ./pics/cat.webp
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Dog
+POST http://localhost:8003/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "skip_upload":true,
+    "bucket_name":"public",
+    "object_name":"test/text.webp",
+    "upload_mime_type":"image/webp",
+    "describe":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.webp"
+Content-Type: image/webp
+
+< ./pics/dog.webp
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Cat and dog
+POST http://localhost:8003/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "skip_upload":true,
+    "bucket_name":"public",
+    "object_name":"test/text.webp",
+    "upload_mime_type":"image/webp",
+    "describe":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.webp"
+Content-Type: image/webp
+
+< ./pics/cat-and-dog.webp
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Car
+POST http://localhost:8003/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "skip_upload":true,
+    "bucket_name":"public",
+    "object_name":"test/text.webp",
+    "upload_mime_type":"image/webp",
+    "describe":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.webp"
+Content-Type: image/webp
+
+< ./pics/car.webp
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

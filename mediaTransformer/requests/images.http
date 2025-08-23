@@ -1,0 +1,84 @@
+### Upload an image, test compression and tagging
+POST http://localhost:8003/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "skip_upload":true,
+    "bucket_name":"public",
+    "object_name":"test/name.webp",
+    "convert_to":"WEBP",
+    "mime_type":"image/jpeg",
+    "upload_mime_type":"image/webp",
+    "quality":80,
+    "limit_resolution":{"x":1920,"y":1080},
+    "describe":true,
+    "variants":[{
+        "object_name":"test/name-lite.webp",
+        "limit_resolution":{"x":1280,"y":720}
+    }]
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.jpg"
+Content-Type: image/jpeg
+
+< ./pics/forest-hd.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.jpg"
+Content-Type: image/jpeg
+
+< ./pics/text.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload an webp image, test OCR and tagging
+POST http://localhost:8003/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "skip_upload":true,
+    "bucket_name":"public",
+    "object_name":"test/text.webp",
+    "upload_mime_type":"image/webp",
+    "ocr":true,
+    "describe":true,
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.webp"
+Content-Type: image/webp
+
+< ./pics/car-poster.webp
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload an low resolution image, test tagging
+POST http://localhost:8003/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "skip_upload":true,
+    "bucket_name":"public",
+    "object_name":"test/text.jpg",
+    "upload_mime_type":"image/jpg",
+    "describe":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.jpg"
+Content-Type: image/jpg
+
+< ./pics/road-lowres.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

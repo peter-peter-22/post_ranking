@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "src"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+fastapi = "*"
+uvicorn = "*"
+sentence-transformers = "*"
+pydantic = "*"
+gunicorn = "*"
+keybert = "^0.9.0"
+nltk = "^3.9.1"
+scikit-learn = "^1.6.1"
+numpy = "^2.2.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

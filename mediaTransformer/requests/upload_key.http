@@ -1,0 +1,67 @@
+# Create a upload key for an image
+POST http://localhost:8003/sign/image HTTP/1.1
+content-type: application/json
+secret-key: 123
+
+{
+    "key": "abc",
+    "expiration": 600,
+    "options": {   
+        "skip_upload":true,
+        "mime_type":"image/webp",
+        "bucket_name":"public",
+        "object_name":"test/text.webp",
+        "upload_mime_type":"image/webp",
+        "ocr":true,
+        "describe":true
+    }
+}
+
+### Signed image upload
+POST http://localhost:8003/signed_upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="key"
+
+abc
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.webp"
+Content-Type: image/webp
+
+< ./pics/car-poster.webp
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+# Create a upload key for a video
+POST http://localhost:8003/sign/video HTTP/1.1
+content-type: application/json
+secret-key: 123
+
+{
+    "key": "abc",
+    "expiration": 600,
+    "options": {   
+        "skip_upload":true,
+        "mime_type":"video/mp4",
+        "bucket_name":"public",
+        "object_name":"test/test.webp",
+        "upload_mime_type":"image/webp",
+        "ocr":true,
+        "describe":true
+    }
+}
+
+### Signed video upload
+POST http://localhost:8003/signed_upload/video
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="key"
+
+abc
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="video.mp4"
+Content-Type: video/mp4
+
+< ./videos/archery.mp4
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

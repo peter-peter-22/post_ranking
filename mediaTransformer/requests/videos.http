@@ -1,0 +1,134 @@
+### Upload a video, test compression and tagging
+POST http://localhost:8003/upload/video
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "bucket_name":"public",
+    "object_name":"test/name.mp4",
+    "convert_to":"mp4",
+    "mime_type":"video/mp4",
+    "upload_mime_type":"video/mp4",
+    "bitrate":"1000k",
+    "limit_resolution":{"x":1920,"y":1080},
+    "describe":true,
+    "skip_upload":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="video.mp4"
+Content-Type: video/mp4
+
+< ./videos/archery.mp4
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload a long video, test compression and tagging
+POST http://localhost:8003/upload/video
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "bucket_name":"public",
+    "object_name":"test/mountains.mp4",
+    "convert_to":"mp4",
+    "mime_type":"video/mp4",
+    "upload_mime_type":"video/mp4",
+    "bitrate":"1000k",
+    "limit_resolution":{"x":1920,"y":1080},
+    "describe":true,
+    "skip_upload":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="video.mp4"
+Content-Type: video/mp4
+
+< ./videos/mountains.mp4
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload a long video in very small size, test compression and tagging
+POST http://localhost:8003/upload/video
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "bucket_name":"public",
+    "object_name":"test/mountains-lite.mp4",
+    "convert_to":"mp4",
+    "mime_type":"video/mp4",
+    "upload_mime_type":"video/mp4",
+    "bitrate":"1000k",
+    "limit_resolution":{"x":100,"y":100},
+    "describe":true,
+    "skip_upload":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="video.mp4"
+Content-Type: video/mp4
+
+< ./videos/mountains.mp4
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload a webm video (fails)
+POST http://localhost:8003/upload/video
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "bucket_name":"public",
+    "object_name":"test/name.webm",
+    "convert_to":"webm",
+    "mime_type":"video/webm",
+    "upload_mime_type":"video/webm",
+    "bitrate":"1000k",
+    "limit_resolution":{"x":1920,"y":1080},
+    "describe":true,
+    "skip_upload":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="video.webm"
+Content-Type: video/webm
+
+< ./videos/archery.webm
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload a gif video (fails)
+POST http://localhost:8003/upload/video
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "bucket_name":"public",
+    "object_name":"test/name.gif",
+    "convert_to":"gif",
+    "mime_type":"video/gif",
+    "upload_mime_type":"video/gif",
+    "bitrate":"1000k",
+    "limit_resolution":{"x":1920,"y":1080},
+    "describe":true,
+    "skip_upload":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="video.gif"
+Content-Type: image/gif
+
+< ./videos/archery.gif
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

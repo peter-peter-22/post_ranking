@@ -1,0 +1,17 @@
+config:
+  target: "http://embedding:8000"
+  phases:
+    - duration: 1       
+      arrivalRate: 10000   
+  http:
+    timeout: 10000
+  defaults:
+    headers:
+      content-type: "application/json"
+
+scenarios:
+  - flow:
+      - post:
+          url: "/embedding"
+          json:
+            text: "hello world"

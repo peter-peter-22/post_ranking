@@ -1,0 +1,16 @@
+add near cache
+replace all occurences of personalizepost and post process post and indexed lookup
+replace all recalculations with cache writes
+remove unused db columns and indexes
+do something with the snapshots, the engagement history snapshots are not updated
+check if the tag:{} filter of the post expiration query works
+cache notifications feed
+cache trend caclulation
+add the total engagement history of likers and commenters to posts. requirement: track likers in redis, implement aggregated engagement score
+apply changes to ranking params
+add redis persistence
+optimize media transfer, add gpu support to ffmpeg
+separate full text search db?
+use a redis ORM?
+restructure folders
+cache first page of user contents?

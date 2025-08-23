@@ -1,0 +1,3 @@
+com\me\ConnectionManager.class
+com\me\PostsMapStore.class
+com\me\CockroachConnectionFactory.class

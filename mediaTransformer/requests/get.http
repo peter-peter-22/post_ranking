@@ -1,0 +1,11 @@
+### Get a file
+GET http://localhost:8003/get/public/users%2Ff4376ea0-ef80-484f-8ef9-e8abb3ca7735%2Fposts%2F24dc47ef-e7f2-4454-9391-5223a76d239d%2Fimages%2F2.webp HTTP/1.1
+
+### Get a file that does not exists
+GET http://localhost:8003/get/public/nothing.jpg HTTP/1.1
+
+### Get a file from a bucketthat does not exists
+GET http://localhost:8003/get/nothing/nothing.jpg HTTP/1.1
+
+### Get a variant
+GET http://localhost:8003/get/public/users/f8bd95b6-0e70-4b8c-8e39-7746bc1aa459/profile/avatar.webp?variant=avatar_thumbnail HTTP/1.1

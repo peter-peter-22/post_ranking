@@ -1,0 +1,21 @@
+### test text transformer
+POST http://localhost:8000/embedding HTTP/1.1
+content-type: application/json
+
+{
+    "texts": ["Hello world"]
+}
+
+### test text transformer with multiple texts
+POST http://localhost:8000/embedding HTTP/1.1
+content-type: application/json
+
+{
+    "texts": ["Hello world","Hello world"]
+}
+
+### embedding vector generator stress test
+GET http://localhost:8000/stress_test
+
+### embedding vector batch size test
+GET http://localhost:8000/batch_test

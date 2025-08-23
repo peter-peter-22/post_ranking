@@ -1,0 +1,46 @@
+services:
+
+  redis:
+    container_name: redis-cache
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - redis_data:/data
+
+  embedding:
+    container_name: python-embedding
+    build:
+      context: /embedding
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./embedding:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: "gunicorn -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 src.app:app"
+
+  nginx:
+    container_name: nginx-proxy
+    image: nginx:alpine
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf:ro
+
+  artillery:
+    container_name: artillery-tester
+    build:
+      context: /artillery
+    volumes:
+      - ./artillery/tests:/app
+
+volumes:
+  redis_data:

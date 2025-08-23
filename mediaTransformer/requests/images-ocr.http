@@ -1,0 +1,71 @@
+### Singleline
+POST http://localhost:8003/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "bucket_name":"public",
+    "object_name":"test/text.webp",
+    "upload_mime_type":"image/webp",
+    "ocr":true,
+    "describe":true,
+    "skip_upload":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.jpg"
+Content-Type: image/jpeg
+
+< ./pics/text-single.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Multiline
+POST http://localhost:8003/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "bucket_name":"public",
+    "object_name":"test/text.webp",
+    "upload_mime_type":"image/webp",
+    "ocr":true,
+    "describe":true,
+    "skip_upload":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.jpg"
+Content-Type: image/jpeg
+
+< ./pics/text-multi.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Background, multiline
+POST http://localhost:8003/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+secret-key: 123
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="options"
+
+{   
+    "bucket_name":"public",
+    "object_name":"test/text.webp",
+    "upload_mime_type":"image/webp",
+    "ocr":true,
+    "describe":true,
+    "skip_upload":true
+}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="image.webp"
+Content-Type: image/webp
+
+< ./pics/car-poster.webp
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

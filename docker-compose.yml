@@ -1,0 +1,156 @@
+services:
+
+  redis:
+    # CLI: redis-cli
+    container_name: redis-cache-dev
+    image: redis/redis-stack:7.4.0-v6 # redis-stack-server for prod
+    environment:
+      - REDIS_PASSWORD=123
+    ports:
+      - "6379:6379"
+      - "6380:8001"
+    volumes:
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - redis_data:/data
+
+  embedding:
+    container_name: python-embedding-dev
+    build:
+      context: /embedding
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./embedding:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+    command: "uvicorn src.app:app --host=0.0.0.0 --port=8000 --reload --no-access-log"
+
+  clustering:
+    container_name: python-clustering-dev
+    build:
+      context: /clustering
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./clustering:/app
+    env_file:
+      - ./clustering/.env.docker
+    command: "uvicorn src.app:app --host=0.0.0.0 --port=8001 --reload --no-access-log"
+
+  nginx:
+    container_name: nginx-proxy-dev
+    image: nginx:alpine
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/nginx.conf:ro
+
+  artillery:
+    container_name: artillery-tester-dev
+    build:
+      context: /artillery
+    volumes:
+      - ./artillery/tests:/app
+
+  backend:
+    container_name: node-backend-dev
+    build:
+      context: /backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+      - "9229:9229" # Debugger port
+    volumes:
+      - ./backend/src:/app/src
+    env_file:
+      - ./backend/.env.docker
+    command: pnpm run dev
+    depends_on:
+      - redis
+
+  ranker:
+    container_name: python-ranker-dev
+    build:
+      context: /ranker
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./ranker:/app
+    env_file:
+      - ./ranker/.env.docker
+    command: "uvicorn src.app:app --host=0.0.0.0 --port=8002 --reload --no-access-log"
+
+  object-storage:
+    image: minio/minio
+    container_name: minio-object-storage-dev
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000" # API endpoint 
+      - "9001:9001" # Web console
+
+  media-transformer:
+    container_name: python-media-transformer-dev
+    build:
+      context: /mediaTransformer
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8003"
+    volumes:
+      #??
+      - ./mediaTransformer:/app
+      - /hf_cache
+    env_file:
+      - ./mediaTransformer/.env.docker
+    environment:
+      - HF_HOME=/hf_cache
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [ gpu ]
+    command: "uvicorn src.app:app --host=0.0.0.0 --port=8003 --reload"
+
+  db:
+    # CLI: cockroach sql --insecure; use main;
+    container_name: cockroach-db-dev
+    image: cockroachdb/cockroach:v25.2.0
+    command: start-single-node --insecure
+    ports:
+      - "26257:26257"
+      - "8080:8080"
+    volumes:
+      - cockroach-data:/cockroach/cockroach-data
+
+  hazelcast:
+    # CLI: hz-cli sql
+    # password: bjhe231rugr2354ugz435tgu7tb 7c3tg767fbícew7ufb6 U=BWEdfx+%!7q7b6u
+    container_name: "hazelcast-dev"
+    image: hazelcast/hazelcast:5.5
+    environment:
+      - JAVA_OPTS=-Dhazelcast.config=/opt/hazelcast/config/hazelcast.yaml
+      - CLASSPATH=/opt/hazelcast/extensions/*
+    volumes:
+      - ./hazelcast/java/hz_plugins/target/hz_plugins-1.0-SNAPSHOT.jar:/opt/hazelcast/extensions/hz_plugins.jar
+      - ./hazelcast/hazelcast.yaml:/opt/hazelcast/config/hazelcast.yaml
+    ports:
+      - "5701:5701"
+
+volumes:
+  minio_data:
+  redis_data:
+  cockroach-data:

@@ -1,0 +1,22 @@
+hazelcast:
+  properties:
+    hazelcast.shutdownhook.policy: GRACEFUL
+    hazelcast.graceful.shutdown.max.wait: 600
+  jet:
+    enabled: true
+  data-connection:
+    cockroach-db:
+      type: JDBC
+      properties:
+        jdbcUrl: jdbc:postgresql://db:26257/main?sslmode=disable 
+        user: root 
+        password: ""
+      shared: true
+  map:
+    posts:
+      time-to-live-seconds: 60
+      max-idle-seconds: 60
+      map-store:
+        enabled: true
+        class-name: com.me.PostsMapStore
+        write-delay-seconds: 30

@@ -20,3 +20,5 @@ hazelcast:
         enabled: true
         class-name: com.me.PostsMapStore
         write-delay-seconds: 30
+      partition-attributes:
+        - name: "partition"

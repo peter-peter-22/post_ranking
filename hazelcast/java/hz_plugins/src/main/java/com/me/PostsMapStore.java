@@ -1,15 +1,21 @@
 package com.me;
 
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import com.hazelcast.core.*;
-import com.hazelcast.internal.json.JsonObject;
-import com.hazelcast.map.*;
-import java.sql.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hazelcast.core.HazelcastJsonValue;
+import com.hazelcast.map.MapLoaderLifecycleSupport;
+import com.hazelcast.map.MapStore;
 
 public class PostsMapStore implements MapStore<String, HazelcastJsonValue>, MapLoaderLifecycleSupport {
     private final ObjectMapper mapper = new ObjectMapper();
@@ -30,23 +36,7 @@ public class PostsMapStore implements MapStore<String, HazelcastJsonValue>, MapL
             ps.setString(1, key);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    JsonObject json = new JsonObject()
-                            .add("__key", rs.getString("id"))
-                            .add("text", rs.getString("text"))
-                            .add("likeCount", rs.getInt("likeCount"))
-                            .add("replyCount", rs.getInt("replyCount"))
-                            .add("clickCount", rs.getInt("clickCount"))
-                            .add("viewCount", rs.getInt("viewCount"))
-                            .add("topic", rs.getString("topic"))
-                            .add("engaging", rs.getFloat("embedding"))
-                            .add("replyingTo", rs.getString("replyingTo"))
-                            .add("createdAt", rs.getDate("createdAt").getTime())
-                            .add("embedding", rs.getString("embedding"))
-                            .add("media", rs.getString("media"))
-                            .add("deleted", rs.getBoolean("deleted"))
-                            .add("rootPostId", rs.getString("rootPostId"));
-
-                    return new HazelcastJsonValue(json.toString());
+                   return Post.parse(rs);
                 }
             }
         } catch (Exception e) {

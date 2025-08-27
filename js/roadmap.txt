@@ -10,7 +10,6 @@ add the total engagement history of likers and commenters to posts. requirement:
 apply changes to ranking params
 add redis persistence
 optimize media transfer, add gpu support to ffmpeg
-separate full text search db?
-use a redis ORM?
+separate full text search and vector search into weaviate?
 restructure folders
 cache first page of user contents?

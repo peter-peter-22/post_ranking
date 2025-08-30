@@ -1,3 +1,4 @@
+import { HazelcastClient } from "hazelcast-client/lib/HazelcastClient";
 import { Post } from "../../db/schema/posts";
 import { hazelClient } from "../connect";
 
@@ -46,25 +47,7 @@ OPTIONS (
 )
 `);
 
-await hazelClient.getSql().execute(`
-CREATE INDEX IF NOT EXISTS posts_of_user
-ON posts ("userId")
-`);
-
-await hazelClient.getSql().execute(`
-CREATE INDEX IF NOT EXISTS replies_of_post
-ON posts ("replyingTo","createdAt")
-`);
-
-await hazelClient.getSql().execute(`
-CREATE INDEX IF NOT EXISTS replies_of_user
-ON posts ("replyingTo","userId")
-TYPE HASH
-`);
-
 export const postsMap = await hazelClient.getMap<string, string>('posts');
-
-console.log(await postsMap.getAll(["0000ec5e-34b8-40ce-8c69-2447d4cc0380"]))
 
 export function serializePost({ createdAt, embedding, id, media, ...rest }: CachedPost): CachedPostSerialized {
     return {
@@ -76,7 +59,7 @@ export function serializePost({ createdAt, embedding, id, media, ...rest }: Cach
     }
 }
 
-export function deserializeUser({ createdAt, embedding, __key, media, ...rest }: CachedPostSerialized): CachedPost {
+export function deserializePost({ createdAt, embedding, __key, media, ...rest }: CachedPostSerialized): CachedPost {
     return {
         id: __key,
         createdAt: new Date(createdAt),

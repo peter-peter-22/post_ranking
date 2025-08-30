@@ -1,7 +1,6 @@
 package com.me;
 
 import java.sql.ResultSet;
-import java.util.Optional;
 
 import com.hazelcast.core.HazelcastJsonValue;
 import com.hazelcast.internal.json.JsonObject;
@@ -11,6 +10,7 @@ public class Post {
         try {
             JsonObject json = new JsonObject()
                     .add("__key", rs.getString("id"))
+                    .add("userId", rs.getString("userId"))
                     .add("text", rs.getString("text"))
                     .add("likeCount", rs.getInt("likeCount"))
                     .add("replyCount", rs.getInt("replyCount"))
@@ -23,9 +23,7 @@ public class Post {
                     .add("embedding", rs.getString("embedding"))
                     .add("media", rs.getString("media"))
                     .add("deleted", rs.getBoolean("deleted"))
-                    .add("rootPostId", rs.getString("rootPostId"))
-                    .add("partition",
-                            Optional.ofNullable(rs.getString("replyingTo")).orElse(rs.getString("id")));
+                    .add("rootPostId", rs.getString("rootPostId"));
             return new HazelcastJsonValue(json.toString());
         } catch (Exception e) {
             e.printStackTrace();

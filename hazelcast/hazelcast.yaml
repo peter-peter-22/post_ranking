@@ -1,18 +1,14 @@
 hazelcast:
+
   properties:
     hazelcast.shutdownhook.policy: GRACEFUL
     hazelcast.graceful.shutdown.max.wait: 600
+
   jet:
     enabled: true
-  data-connection:
-    cockroach-db:
-      type: JDBC
-      properties:
-        jdbcUrl: jdbc:postgresql://db:26257/main?sslmode=disable 
-        user: root 
-        password: ""
-      shared: true
+
   map:
+í
     posts:
       time-to-live-seconds: 60
       max-idle-seconds: 60
@@ -20,5 +16,30 @@ hazelcast:
         enabled: true
         class-name: com.me.PostsMapStore
         write-delay-seconds: 30
-      partition-attributes:
-        - name: "partition"
+
+    #users:
+    #  time-to-live-seconds: 60
+    #  max-idle-seconds: 60
+    #  map-store:
+    #    enabled: true
+    #    class-name: com.me.UsersMapStore
+    #    write-delay-seconds: 30
+
+    users:
+      time-to-live-seconds: 60
+      max-idle-seconds: 60
+
+    user_features_anchors:
+      time-to-live-seconds: 60
+      max-idle-seconds: 60
+
+    comment_section_anchors:
+      time-to-live-seconds: 60
+      max-idle-seconds: 60
+      map-store:
+        enabled: true
+        class-name: com.me.CommentSectionMapStore
+      entry-listeners:
+        - class-name: com.me.CommentSectionExpiration
+          include-value: false
+          local: false

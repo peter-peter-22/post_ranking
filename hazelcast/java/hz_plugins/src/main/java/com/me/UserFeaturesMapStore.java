@@ -18,11 +18,11 @@ import com.hazelcast.map.IMap;
 import com.hazelcast.map.MapLoaderLifecycleSupport;
 import com.hazelcast.map.MapStore;
 
-public class CommentSectionMapStore implements MapStore<String, HazelcastJsonValue>, MapLoaderLifecycleSupport {
+public class UserFeaturesMapStore implements MapStore<String, HazelcastJsonValue>, MapLoaderLifecycleSupport {
     static DataSource ds;
     static HazelcastInstance hz;
-    static IMap<String, HazelcastJsonValue> postsMap;
-    static IMap<String, HazelcastJsonValue> commentsMap;
+    static IMap<String, HazelcastJsonValue> followersMap;
+    static IMap<String, HazelcastJsonValue> followingMap;
 
     @Override
     public void init(HazelcastInstance hazelcastInstance, Properties properties, String mapName) {
@@ -30,43 +30,23 @@ public class CommentSectionMapStore implements MapStore<String, HazelcastJsonVal
         ConnectionManager.register(hazelcastInstance);
         ds = CockroachConnectionFactory.getDataSource();
         hz = hazelcastInstance;
-        postsMap = hz.getMap("posts");
-        commentsMap = hz.getMap("comments");
-    }
-
-    static HazelcastJsonValue parseComment(ResultSet rs) {
-        try {
-            JsonObject json = new JsonObject()
-                    .add("__key", rs.getString("id"))
-                    .add("userId", rs.getString("userId"))
-                    .add("replyingTo", rs.getString("replyingTo"))
-                    .add("createdAt", rs.getDate("createdAt").getTime())
-                    .add("rootPostId", rs.getString("rootPostId"));
-            return new HazelcastJsonValue(json.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        followersMap = hz.getMap("followers");
+        followingMap = hz.getMap("following");
     }
 
     @Override
     public HazelcastJsonValue load(String key) {
-        System.out.println(String.format("Comment section fallback for key '%s'", key));
+        System.out.println(String.format("User features fallback for key '%s'", key));
         try (Connection con = ds.getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM posts WHERE \"rootPostId\"=?");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM follows WHERE \"followedId\"=?");
             ps.setString(1, key);
             try (ResultSet rs = ps.executeQuery()) {
-                Map<String, HazelcastJsonValue> comments = new HashMap<>();
-                Map<String, HazelcastJsonValue> posts = new HashMap<>();
-
+                Map<String, HazelcastJsonValue> followers = new HashMap<>();
                 if (rs.next()) {
                     String id = rs.getString("id");
-                    posts.put(id, Post.parse(rs));
-                    comments.put(id, parseComment(rs));
+                    followers.put(id, Post.parse(rs));
                 }
-
-                postsMap.putAll(posts);
-                commentsMap.putAll(comments);
+                followersMap.putAll(followers);
             }
             JsonObject json = new JsonObject().add("__key", key);
             return new HazelcastJsonValue(json.toString());

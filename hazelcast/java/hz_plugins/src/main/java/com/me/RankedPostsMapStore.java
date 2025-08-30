@@ -8,21 +8,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.HazelcastJsonValue;
 import com.hazelcast.internal.json.JsonObject;
-import com.hazelcast.map.IMap;
 import com.hazelcast.map.MapLoaderLifecycleSupport;
 import com.hazelcast.map.MapStore;
 
-public class CommentSectionMapStore implements MapStore<String, HazelcastJsonValue>, MapLoaderLifecycleSupport {
-    static DataSource ds;
-    static HazelcastInstance hz;
-    static IMap<String, HazelcastJsonValue> postsMap;
-    static IMap<String, HazelcastJsonValue> commentsMap;
+public class RankedPostsMapStore implements MapStore<String, HazelcastJsonValue>, MapLoaderLifecycleSupport {
+    private DataSource ds;
+    private HazelcastInstance hz;
 
     @Override
     public void init(HazelcastInstance hazelcastInstance, Properties properties, String mapName) {
@@ -30,23 +28,6 @@ public class CommentSectionMapStore implements MapStore<String, HazelcastJsonVal
         ConnectionManager.register(hazelcastInstance);
         ds = CockroachConnectionFactory.getDataSource();
         hz = hazelcastInstance;
-        postsMap = hz.getMap("posts");
-        commentsMap = hz.getMap("comments");
-    }
-
-    static HazelcastJsonValue parseComment(ResultSet rs) {
-        try {
-            JsonObject json = new JsonObject()
-                    .add("__key", rs.getString("id"))
-                    .add("userId", rs.getString("userId"))
-                    .add("replyingTo", rs.getString("replyingTo"))
-                    .add("createdAt", rs.getDate("createdAt").getTime())
-                    .add("rootPostId", rs.getString("rootPostId"));
-            return new HazelcastJsonValue(json.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @Override
@@ -56,17 +37,12 @@ public class CommentSectionMapStore implements MapStore<String, HazelcastJsonVal
             PreparedStatement ps = con.prepareStatement("SELECT * FROM posts WHERE \"rootPostId\"=?");
             ps.setString(1, key);
             try (ResultSet rs = ps.executeQuery()) {
-                Map<String, HazelcastJsonValue> comments = new HashMap<>();
-                Map<String, HazelcastJsonValue> posts = new HashMap<>();
-
+                var postsMap = hz.getMap("posts");
                 if (rs.next()) {
                     String id = rs.getString("id");
-                    posts.put(id, Post.parse(rs));
-                    comments.put(id, parseComment(rs));
+                    var post = Post.parse(rs);
+                    postsMap.put(id, post, 0, TimeUnit.SECONDS);
                 }
-
-                postsMap.putAll(posts);
-                commentsMap.putAll(comments);
             }
             JsonObject json = new JsonObject().add("__key", key);
             return new HazelcastJsonValue(json.toString());
